@@ -6,6 +6,8 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -23,7 +25,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            messageCard(Message(name = "Gong", body = "hi everyone"))
+            Conversation(SampleData.conversationSample)
         }
     }
 
@@ -33,7 +35,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     @Composable
-    fun messageCard(message: Message){
+    fun Conversation(messages : List<Message>) {
+        LazyColumn {
+            items(messages){ message ->
+                MessageCard(message)
+            }
+        }
+    }
+
+    @Composable
+    fun MessageCard(message: Message){
         Row(modifier = Modifier.padding(all = 8.dp)) {
             Image(
                 painter = painterResource(R.drawable.ic_launcher_foreground),
