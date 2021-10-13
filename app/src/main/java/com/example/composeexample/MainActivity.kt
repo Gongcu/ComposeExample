@@ -1,10 +1,14 @@
 package com.example.composeexample
 
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -13,11 +17,13 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.runtime.*
 
 class MainActivity : AppCompatActivity() {
     //https://developer.android.com/jetpack/compose/tutorial
@@ -57,7 +63,16 @@ class MainActivity : AppCompatActivity() {
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            Column {
+            var isExpanded by remember{ mutableStateOf(false)}
+
+            val surfaceColor by animateColorAsState(
+                if (isExpanded) MaterialTheme.colors.primary
+                else MaterialTheme.colors.surface
+            )
+
+            Column(
+                modifier = Modifier.clickable { isExpanded = !isExpanded }
+            ) {
                 Text(
                     text = message.name,
                     color = MaterialTheme.colors.secondaryVariant,
@@ -67,18 +82,20 @@ class MainActivity : AppCompatActivity() {
 
                 Surface( //도형 사용
                     shape = MaterialTheme.shapes.medium,
-                    elevation = 1.dp
+                    elevation = 1.dp,
+                    color = surfaceColor,
+                    modifier = Modifier.animateContentSize().padding(1.dp)
                 ) {
                     Text(
                         text = message.body,
                         modifier = Modifier.padding(all = 4.dp),
-                        style = MaterialTheme.typography.body1
+                        style = MaterialTheme.typography.body1,
+                        maxLines = if(isExpanded) Int.MAX_VALUE else 1
                     )
                 }
 
             }
         }
     }
-
 }
 
